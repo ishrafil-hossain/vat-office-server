@@ -3,6 +3,7 @@ const app = express();
 const cors = require('cors');
 require('dotenv').config();
 const { MongoClient } = require('mongodb');
+const ObjectId = require('mongodb').ObjectId;
 
 const port = process.env.PORT || 5000;
 
@@ -37,6 +38,13 @@ async function run() {
             res.json(files);
         });
 
+        // Delete a single files
+        app.delete('/files/user/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await filesCollection.deleteOne(query);
+            res.json(result);
+        });
 
         // post or add a file 
         app.post('/files', async (req, res) => {
@@ -52,6 +60,7 @@ async function run() {
             console.log(result);
             res.json(result);
         });
+
     }
     finally {
         // await client.close();
