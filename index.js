@@ -33,6 +33,16 @@ async function run() {
             res.json(files);
         });
 
+        // find a single file via product id 
+        app.get('/files/update/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const cursor = filesCollection.find(query);
+            const files = await cursor.toArray();
+            console.log(files)
+            res.json(files);
+        });
+
         // find all files 
         app.get('/files/user', async (req, res) => {
             const cursor = filesCollection.find({});
@@ -54,8 +64,6 @@ async function run() {
             const result = await filesCollection.insertOne(file);
             res.json(result);
         });
-
-
 
 
         // post or add a user in database 
