@@ -1,3 +1,4 @@
+// This is ishrafil branch 
 const express = require('express')
 const app = express();
 const cors = require('cors');
@@ -5,11 +6,13 @@ require('dotenv').config();
 const { MongoClient } = require('mongodb');
 const ObjectId = require('mongodb').ObjectId;
 const { query } = require('express');
+// const fileUpload = require('express-fileupload');
 
 const port = process.env.PORT || 5000;
 
 app.use(cors());
 app.use(express.json());
+// app.use(fileUpload());
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.y6gag.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
@@ -73,6 +76,17 @@ async function run() {
             console.log(result);
             res.json(result);
         });
+
+        // post or add a user's photo in database 
+        // app.post('/users/photo', async (req, res) => {
+        //     const pic = req.files.image;
+        //     const picData = pic.data;
+        //     const encodedPic = picData.toString('base64')
+        //     const imageBuffer = Buffer.from(encodedPic, 'base64')
+        //     const userPhoto = { image: imageBuffer }
+        //     const result = await usersCollection.insertOne(userPhoto);
+        //     res.json(result);
+        // });
 
         // find users department 
 
