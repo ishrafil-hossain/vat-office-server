@@ -68,6 +68,21 @@ async function run() {
             res.json(result);
         });
 
+        // Update file or send file 
+        app.put('/users/:id', async (req, res) => {
+            const id = req.params.id;
+            const updatedUser = req.body;
+            const filter = { _id: ObjectId(id) };
+            const updateDoc = {
+                $set: {
+                    department: updatedUser.department,
+                    personName: updatedUser.personName
+                },
+            };
+            const result = await filesCollection.updateOne(filter, updateDoc);
+            res.json(result);
+        })
+
 
         // post or add a user in database 
         app.post('/users', async (req, res) => {
