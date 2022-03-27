@@ -84,6 +84,26 @@ async function run() {
             res.json(result);
         })
 
+        // Update file's all information
+        app.put('/users/update/:id', async (req, res) => {
+            const id = req.params.id;
+            const updatedUser = req.body;
+            const filter = { _id: ObjectId(id) };
+            const updateDoc = {
+                $set: {
+                    fileName: updatedUser.fileName,
+                    company: updatedUser.company,
+                    date: updatedUser.date_time,
+                    department: updatedUser.department,
+                    personName: updatedUser.personName
+                },
+            };
+            const result = await filesCollection.updateOne(filter, updateDoc);
+            res.json(result);
+        })
+
+
+
 
         // post or add a user in database 
         app.post('/users', async (req, res) => {
