@@ -9,11 +9,24 @@ const { json } = require('express/lib/response');
 
 const port = process.env.PORT || 5000;
 
+app.get('/', (req, res) => {
+    res.send('Hello Ishrafil this is vat office server');
+})
+
 app.use(cors());
 app.use(express.json());
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.y6gag.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+
+// to check database connected or not 
+client.connect()
+    .then(result => {
+        console.log('mongoDb connected')
+    })
+    .catch(error => {
+        console.log('mongoDb not connected')
+    })
 
 
 async function run() {
@@ -29,7 +42,6 @@ async function run() {
         // make admin api
         app.post("/admin", async (req, res) => {
             const admin = req.body;
-            console.log(admin);
             const result = await adminCollection.insertOne(admin);
             res.json(result);
         })
@@ -43,7 +55,6 @@ async function run() {
         // make receptionist api
         app.post("/receptionist", async (req, res) => {
             const receptionist = req.body;
-            console.log(receptionist);
             const result = await receptionistCollection.insertOne(receptionist);
             res.json(result);
         })
@@ -67,10 +78,9 @@ async function run() {
         // find a single file via product id 
         app.get('/files/update/:id', async (req, res) => {
             const id = req.params.id;
-            const query = { _id: ObjectId(id) };
+            const query = { _id: new ObjectId(id) };
             const cursor = filesCollection.find(query);
             const files = await cursor.toArray();
-            console.log(files)
             res.json(files);
         });
 
@@ -84,7 +94,7 @@ async function run() {
         // Delete a single files
         app.delete('/files/user/:id', async (req, res) => {
             const id = req.params.id;
-            const query = { _id: ObjectId(id) };
+            const query = { _id: new ObjectId(id) };
             const result = await filesCollection.deleteOne(query);
             res.json(result);
         });
@@ -100,7 +110,7 @@ async function run() {
         app.put('/users/:id', async (req, res) => {
             const id = req.params.id;
             const updatedUser = req.body;
-            const filter = { _id: ObjectId(id) };
+            const filter = { _id: new ObjectId(id) };
             const updateDoc = {
                 $set: {
                     department: updatedUser.department,
@@ -115,7 +125,7 @@ async function run() {
         app.put('/users/update/:id', async (req, res) => {
             const id = req.params.id;
             const updatedUser = req.body;
-            const filter = { _id: ObjectId(id) };
+            const filter = { _id: new ObjectId(id) };
             const updateDoc = {
                 $set: {
                     fileName: updatedUser.fileName,
@@ -129,14 +139,10 @@ async function run() {
             res.json(result);
         })
 
-
-
-
         // post or add a user in database 
         app.post('/users', async (req, res) => {
             const user = req.body;
             const result = await usersCollection.insertOne(user);
-            console.log(result);
             res.json(result);
         });
 
@@ -148,14 +154,12 @@ async function run() {
 
     }
     finally {
-       
+
     }
 }
 run().catch(console.dir);
 
-app.get('/', (req, res) => {
-    res.send('Hello Ishrafil this is vat office server');
-})
+
 
 app.listen(port, () => {
     console.log(`Listening port :${port}`)
